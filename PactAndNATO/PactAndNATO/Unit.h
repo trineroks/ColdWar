@@ -4,11 +4,12 @@
 #include "Environment.h"
 #include "TileData.h"
 #include "Label.h"
+#include "ht.h"
 
 class CUnit
 {
 public:
-	CUnit(int p_owner, string p_name, int p_unitType, int p_moveRange, int p_optics, int p_maxHP, int p_munitions, int p_fuel, 
+	CUnit(int p_owner, int p_team, string p_name, int p_unitType, int p_moveRange, int p_optics, int p_maxHP, int p_munitions, int p_fuel, 
 		customPoint p_pos, CSDL_Setup *p_csdl_setup, SDL_Texture *p_texture, CEnvironment *p_environment);
 
 	~CUnit(void);
@@ -90,9 +91,6 @@ private:
 	void unmarkPossibleAttack();
 	void CenterCoordinates(int x, int y);
 
-	int primaryAmmo_;
-	int supportAmmo_;
-
 	vector<tilePoint> openSteps_;
 	vector<tilePoint> attackTiles_;
 	vector<tilePoint> fogTiles_;
@@ -121,15 +119,25 @@ private:
 
 	SDL_Rect imageCamera_;
 
-	int owner_;
+	// // // // // // // // // // // // // //
+	//MOVE THESE TO A NEW CONSTANTS CLASS!!//
+	// // // // // // // // // // // // // //
 	int unitType_;
 	int moveRange_;
 	int attackRange_;
 	int maxHP_;
 	int currentHP_;
 	int animationSpeed_;
-
-	int optics_;
 	int defense_;
-	int armor_;
+	int maxFuel_;
+	int maxMunitions_;
+	// // // // // // // // // // // // // //
+	// ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  //
+	// // // // // // // // // // // // // //
+
+	int owner_;
+	int team_;
+	int optics_;
+	int munitions_;
+	int fuel_;
 };

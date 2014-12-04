@@ -5,6 +5,7 @@
 #include "TileData.h"
 #include "ActionMenu.h"
 #include "Player.h"
+#include "ht.h"
 
 class CUnit;
 

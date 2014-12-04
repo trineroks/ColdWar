@@ -3,6 +3,7 @@
 #include "GameState.h"
 #include "stdafx.h"
 #include "SDL_Setup.h"
+#include "ht.h"
 
 class CMainExec
 {

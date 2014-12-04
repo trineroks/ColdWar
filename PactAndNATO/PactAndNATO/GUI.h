@@ -3,6 +3,7 @@
 #include "Sprite.h"
 #include "Label.h"
 #include "SDL_Setup.h"
+#include "ht.h"
 
 class CGUI : public CSprite
 {

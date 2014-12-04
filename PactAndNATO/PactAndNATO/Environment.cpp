@@ -175,12 +175,9 @@ CEnvironment::CEnvironment(int *board, int playerNum, CPlayer *p_players, int p_
 	Upos.x = 8;
 	Upos.y = 8;
 	hexes_[Upos.x + width*Upos.y].setUnit(new CAircraft(0, "AH-64 Apache", 12, 4, 100, 4, 0, gunshipprimary, gunshipsupport, Upos, csdl_setup, units, this));
-	*/
-
 	Upos.x = 6;
 	Upos.y = 4;
 	hexes_[Upos.x + width*Upos.y].setUnit(new CInfantry(1, "Soviet Riflemen", 6, 5, 100, 4, 0, primary, support, Upos, csdl_setup, units, this));
-	/*
 	Upos.x = 7;
 	Upos.y = 4;
 	hexes_[Upos.x + width*Upos.y].setUnit(new CInfantry(1, "Soviet Riflemen", 6, 2, 100, 4, 0, primary, support, Upos, csdl_setup, units, this));
@@ -401,10 +398,13 @@ bool CEnvironment::selected(float camX, float camY, int mouseX, int mouseY, int 
 	gameWorldMouse.y = mouseY + camY;
 	//Once we apply these camera values to gameWorldMouse, it is now within the game world. 
 	gameWorldMouse = hitTest(gameWorldMouse);
+	int index = 0;
 	if (isValidTile(gameWorldMouse.x, gameWorldMouse.y))
 	{
 		//hexes_[gameWorldMouse.x + width*gameWorldMouse.y].setSelected(true);
 		//cout << hexes_[gameWorldMouse.x + width*gameWorldMouse.y].getType() << endl;
+		index = gameWorldMouse.x + (height * gameWorldMouse.y);
+		printf("Selected %s hex.\n", hexes_[index].getType().c_str());
 		if (!unitHasMovedException())
 			setCursorPosition(gameWorldMouse.x, gameWorldMouse.y);
 		x_pos = gameWorldMouse.x;

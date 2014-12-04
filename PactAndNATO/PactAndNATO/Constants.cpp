@@ -4,9 +4,11 @@
 
 CConstants::CConstants()
 {
+
 }
 
 
 CConstants::~CConstants()
 {
+
 }

@@ -3,16 +3,23 @@
 
 int roundUp(int health);
 
-CUnit::CUnit(int p_owner, string p_name, int p_unitType, int p_moveRange, int p_optics, int p_maxHP, int p_munitions, int p_fuel,
+CUnit::CUnit(int p_owner, int p_team, string p_name, int p_unitType, int p_moveRange, int p_optics, int p_maxHP, int p_munitions, int p_fuel,
 			customPoint p_pos, CSDL_Setup *p_csdl_setup, SDL_Texture *p_texture, CEnvironment *p_environment)
 {
 	unitType_ = p_unitType;
+	team_ = p_team;
 	gameEnvironment_ = p_environment;
 	unitSheet_ = p_texture;
 	owner_ = p_owner;
 	unitName_ = p_name;
 	setup_ = p_csdl_setup;
 	inDefaultState_ = true;
+
+	maxMunitions_ = p_munitions;
+	munitions_ = maxMunitions_;
+
+	maxFuel_ = p_fuel;
+	fuel_ = maxFuel_;
 
 	animationSpeed_ = 0;
 
@@ -51,8 +58,6 @@ CUnit::~CUnit(void)
 	unitSprite_ = NULL;
 	setup_ = NULL;
 	label_ = NULL;
-	support_ = NULL;
-	primary_ = NULL;
 	fogTiles_.clear();
 	openSteps_.clear();
 	attackTiles_.clear();
@@ -106,25 +111,12 @@ void CUnit::CenterCoordinates(int x, int y)
 
 void CUnit::decrementAmmo(int weapon)
 {
-	switch(weapon)
-	{
-	case WEAPON_PRIMARY:
-		if (primaryAmmo_ > 0)
-			primaryAmmo_--;
-		break;
-	case WEAPON_SUPPORT:
-		if (supportAmmo_ > 0)
-			supportAmmo_--;
-		break;
-	default:
-		printf("Invalid weapon\n");
-	}
+	munitions_--;
 }
 
 void CUnit::replenishAmmo()
 {
-	primaryAmmo_ = primary_->getMaxAmmo();
-	supportAmmo_ = support_->getMaxAmmo();
+	munitions_ = maxMunitions_;
 }
 
 void CUnit::setPos(int x, int y)
@@ -432,16 +424,13 @@ bool CUnit::getTargetableTiles()
 {
 	customPoint adjacent[6];
 	bool skip = false;
-	bool indirect = weapon->getIndirect();
-	bool isSupport = weapon->getIsSupport();
 	tilePoint insert;
 	insert.x = position_.x;
 	insert.y = position_.y;
-	insert.cost = weapon->getRange();
+	insert.cost = attackRange_;
 	attackTiles_.push_back(insert);
-	if (!isSupport && primaryAmmo_ <= 0) //checking primary to see if its ammo is at 0
+	if (munitions_ <= 0) //checking to see if munitions are available. This might be changed later on to just lead to less effective combat
 	{
-		//printf("No targetable enemies with Primary\n");
 		attackTiles_.clear();
 		return false;
 	}
@@ -467,25 +456,14 @@ bool CUnit::getTargetableTiles()
 					}
 					if (gameEnvironment_->isValidTile(adjacent[k].x, adjacent[k].y) && attackTiles_[i].cost > 0 && !skip) 
 					{
-						//Obstacles are only added into the range (max of 2) when the unit is adjacent to it.
-						if (!indirect)
+						if (i == 0 && gameEnvironment_->getHex(adjacent[k].x, adjacent[k].y)->getIsObstacle())
 						{
-							if (i == 0 && gameEnvironment_->getHex(adjacent[k].x, adjacent[k].y)->getIsObstacle())
-							{
-								insert.x = adjacent[k].x;
-								insert.y = adjacent[k].y;
-								insert.cost = 0;
-								attackTiles_.push_back(insert);
-							}
-							else if (!gameEnvironment_->getHex(adjacent[k].x, adjacent[k].y)->getIsObstacle())
-							{
-								insert.x = adjacent[k].x;
-								insert.y = adjacent[k].y;
-								insert.cost = attackTiles_[i].cost - 1;
-								attackTiles_.push_back(insert);
-							}
+							insert.x = adjacent[k].x;
+							insert.y = adjacent[k].y;
+							insert.cost = 0;
+							attackTiles_.push_back(insert);
 						}
-						else
+						else if (!gameEnvironment_->getHex(adjacent[k].x, adjacent[k].y)->getIsObstacle())
 						{
 							insert.x = adjacent[k].x;
 							insert.y = adjacent[k].y;
@@ -497,11 +475,11 @@ bool CUnit::getTargetableTiles()
 			}
 		}
 	}
-	getValidAttackTiles(weapon, isSupport);
+	getValidAttackTiles();
 	return true;
 }
 
-void CUnit::getValidAttackTiles(CWeapon *weapon, bool isSupport)
+void CUnit::getValidAttackTiles()
 {
 	customPoint insert;
 	int iterator = 0;
@@ -513,29 +491,7 @@ void CUnit::getValidAttackTiles(CWeapon *weapon, bool isSupport)
 		{
 			CUnit *enemy = gameEnvironment_->anyEnemyOnTile(insert.x, insert.y, owner_);
 			if (enemy != NULL)
-			{
-				if (enemy->getUnitType() == UNIT_INFANTRY && weapon->getCanTarget().infantry)
-				{
-					if (isSupport)
-						validSupportTiles_.push_back(insert);
-					else	
-						validAttackTiles_.push_back(insert);
-				}
-				else if (enemy->getUnitType() == UNIT_VEHICLE && weapon->getCanTarget().vehicle)
-				{
-					if (isSupport)
-						validSupportTiles_.push_back(insert);
-					else	
-						validAttackTiles_.push_back(insert);
-				}
-				else if (enemy->getUnitType() == UNIT_AIRCRAFT && weapon->getCanTarget().air)
-				{
-					if (isSupport)
-						validSupportTiles_.push_back(insert);
-					else	
-						validAttackTiles_.push_back(insert);
-				}
-			}
+				validAttackTiles_.push_back(insert);
 		}
 	}
 	attackTiles_.clear();

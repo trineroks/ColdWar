@@ -3,6 +3,7 @@
 #include "Sprite.h"
 #include "SDL_Setup.h"
 #include "GameState.h"
+#include "ht.h"
 
 class CMainExec;
 

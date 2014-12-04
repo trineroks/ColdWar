@@ -5,6 +5,7 @@
 #include "InputController.h"
 #include "Environment.h"
 #include "GameState.h"
+#include "ht.h"
 
 class CMainExec;
 

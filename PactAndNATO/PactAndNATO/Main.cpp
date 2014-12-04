@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "Main.h"
 #include "MainExec.h"
+#include "ht.h"
 
 CMain::CMain(CSDL_Setup *p_setup, int *p_board, customPoint p_dimensions, int *mouseX, int *mouseY, 
 	bool teamGame, int numOfPlayers, CPlayer *p_players, CMainExec *p_mainExec)

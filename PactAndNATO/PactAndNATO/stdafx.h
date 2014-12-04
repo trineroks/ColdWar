@@ -53,42 +53,30 @@
 #define UNIT_VEHICLE 1
 #define UNIT_AIRCRAFT 2
 
-typedef enum GameState
+typedef struct rectPortion
 {
-	STATE_NULL = 0,
-	STATE_MENU,
-	STATE_GAME,
-	STATE_EXIT
-}GameState;
-
-typedef enum UnitState
-{
-	UNIT_SELECTED = 0,
-	UNIT_UNSELECTED
-}UnitState;
-
-typedef struct customPoint {
 	int x;
 	int y;
-}customPoint;
+	int w;
+	int h;
+}rectPortion;
 
-typedef struct tilePoint {
-	int x;
-	int y;
-	int cost;
-}tilePoint;
-
-typedef struct canTarget {
-	bool infantry;
-	bool vehicle;
-	bool air;
-}canTarget;
-
-typedef struct moveCost
+typedef struct unitConsts
 {
-	int infantry;
-	int vehicle;
-	int air;
-}moveCost;
+	int unitType;
+	int moveRange;
+	int attackRange;
+	int maxHP;
+	int currentHP;
+	int animationSpeed;
+	int defense;
+	int maxFuel;
+	int maxMunitions;
+	int deployCost;
+	//sprite related info//
+	string spriteSheet;
+	rectPortion portion;
+
+}unitConsts;
 
 using namespace std;

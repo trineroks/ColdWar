@@ -5,6 +5,7 @@
 #include <math.h>
 #include <vector>
 #include "Environment.h"
+#include "ht.h"
 using namespace std;
 
 class CInputController

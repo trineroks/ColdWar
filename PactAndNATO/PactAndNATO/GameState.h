@@ -1,6 +1,7 @@
 #pragma once
 #include "stdafx.h"
 #include "InputController.h"
+#include "ht.h"
 
 class CGameState
 {

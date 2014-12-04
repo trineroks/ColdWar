@@ -1,6 +1,7 @@
 #pragma once
 #include "stdafx.h"
 #include "Hitbox.h"
+#include "ht.h"
 
 class CSprite
 {

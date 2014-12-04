@@ -1,5 +1,7 @@
 #pragma once
 #include "stdafx.h"
+#include "ht.h"
+
 class CLabel
 {
 public:
